@@ -7,5 +7,5 @@ FROM opencti/platform:7.261119.0@sha256:26a4d10501acd962939fc93c0cef236fcdd511a4
 ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 COPY --chmod=0755 start.sh /opt/railway/start.sh
-COPY --chmod=0644 wait-deps.mjs /opt/railway/wait-deps.mjs
+COPY --chmod=0644 wait-deps.mjs health.mjs /opt/railway/
 ENTRYPOINT ["/sbin/tini", "--", "/opt/railway/start.sh"]

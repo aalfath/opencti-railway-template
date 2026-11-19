@@ -3,7 +3,10 @@
 # generated secrets, a wait for Elasticsearch, RabbitMQ, Redis and S3, then OpenCTI.
 set -e
 
-export APP__PORT="${PORT:-8080}"
+# OpenCTI serves the UI and API on APP__PORT (8080, the public domain's target port).
+# PORT (8081) only carries the Railway health check relay (health.mjs).
+export APP__PORT="${APP__PORT:-8080}"
+export PORT="${PORT:-8081}"
 export APP__ADMIN__EMAIL="${APP__ADMIN__EMAIL:-admin@opencti.io}"
 export APP__APP_LOGS__LOGS_FILES="${APP__APP_LOGS__LOGS_FILES:-false}"
 export APP__AUDIT_LOGS__LOGS_FILES="${APP__AUDIT_LOGS__LOGS_FILES:-false}"
@@ -33,6 +36,9 @@ if [ -n "$missing" ]; then
 fi
 
 echo "railway-template: OpenCTI on port $APP__PORT, base URL $APP__BASE_URL"
+if [ "$PORT" != "$APP__PORT" ]; then
+  node /opt/railway/health.mjs &
+fi
 node /opt/railway/wait-deps.mjs
 cd /opt/opencti
 exec node build/back.mjs
